@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "Entry.h"
+#include "Input.h"
 
 using namespace std;
 
@@ -9,24 +9,21 @@ class Neuron
 {
 
 public:
-	Neuron(int entriesAmount);
+	Neuron(int inputsAmount, bool isFirst = false);
 
 	void activationFunction();
 	void updateWeights();
 	double calculateSum();
-	double calculateOutputGradient();
 
-	vector<Entry> & getEntries();
+	vector<Input> & getInputs();
 	double getOutputValue();
 	double getTargetValue();
 	void setTargetValue(double targetValue);
 
-	
-	double transferFunctionDerivative(double x);
 
 private:
 
-	vector<Entry> entries;
+	vector<Input> inputs;
 	double outputValue;
 	double targetValue;
 

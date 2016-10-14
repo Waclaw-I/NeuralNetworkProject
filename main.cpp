@@ -6,18 +6,26 @@
 #include <ctime>
 
 #include "Neuron.h"
+#include "NetworkManager.h"
 
 using namespace std;
 
 void loadTrainingData(string path, vector<vector<double>> & trainingData);
 
 
-
 int main()
 {
-	srand(time(NULL));
-	/*vector<vector<double>> trainingData;
-	loadTrainingData("ANDdata.txt", trainingData);
+	vector<int> networkStructure{ 12,5,5,5, 12, 3 };
+	vector<double> data{ 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5, 12.5, 13.5 };
+	NetworkManager networkManager(networkStructure);
+
+	networkManager.printNetwork();
+	networkManager.insertData(data);
+	
+	cin.get();
+	/*srand(time(NULL));
+	vector<vector<double>> trainingData;
+	loadTrainingData("ORdata.txt", trainingData);
 
 
 	Neuron neuron(2);
@@ -36,11 +44,12 @@ int main()
 		cout << "Output: " << neuron.getOutputValue() << endl;
 		cout << "Target: " << neuron.getTargetValue() << endl;
 		cout << "Error: " << (trainingData[i][2] - neuron.getOutputValue()) << endl;
-		neuron.updateWeights();
+		cout << "Wages: " << neuron.getEntries()[0].getWeight() << "  " << neuron.getEntries()[1].getWeight() << endl;
+		neuron.updateWeights();*/
 
-	}*/
+	//}
 
-	Neuron neuron(1);
+	/*Neuron neuron(1);
 	double delta = 1;
 	int i = 0;
 	while ( delta > 0.01)
@@ -61,12 +70,12 @@ int main()
 		cout << "Target: " << neuron.getTargetValue() << endl;
 		cout << "Error: " << delta << endl;
 		neuron.updateWeights();
-	}
+	}*/
 	
 
 
 
-	cin.get();
+	//cin.get();
 
 }
 

@@ -21,7 +21,10 @@
     <ClCompile Include="Neuron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entry.cpp">
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,7 +32,10 @@
     <ClInclude Include="Neuron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entry.h">
+    <ClInclude Include="Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

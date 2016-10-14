@@ -5,51 +5,54 @@ double const Neuron::maximumWeightValue = 1.0;
 double const Neuron::eta = 0.15;
 double const Neuron::alpha = 0.5;
 
-Neuron::Neuron(int entriesAmount)
+Neuron::Neuron(int inputsAmount, bool isFirst)
 {
-	for (int i = 0; i < entriesAmount; i++)
+	if (isFirst)
 	{
-		entries.push_back(Entry(minimumWeightValue, maximumWeightValue));
+		inputs.push_back(Input(1, 1));
+	}
+	else
+	{
+		for (int i = 0; i < inputsAmount; i++)
+		{
+			inputs.push_back(Input(minimumWeightValue, maximumWeightValue));
+		}
 	}
 }
 
-void Neuron::activationFunction() { this->outputValue = tanh(calculateSum()); }
+void Neuron::activationFunction()
+{ 
+	//this->outputValue = tanh(calculateSum()); 
+
+	if (calculateSum() > 0.5) this->outputValue = 1;
+	else this->outputValue = 0;
+}
 
 double Neuron::calculateSum() 
 {
 	double sum = 0;
-	for (int i = 0; i < entries.size(); i++)
+	for (int i = 0; i < inputs.size(); i++)
 	{
-		sum += this->entries[i].getValue();
+		sum += this->inputs[i].getValue();
 	}
 	return sum;
 }
 
-double Neuron::calculateOutputGradient()
-{
-	double delta = this->targetValue - this->outputValue;
-	return delta * transferFunctionDerivative(outputValue);
-}
-
-double Neuron::transferFunctionDerivative(double x)
-{
-	return (1.0 - x*x);
-}
-
 void Neuron::updateWeights()
 {
-	for (int i = 0; i < entries.size(); i++)
+	for (int i = 0; i < inputs.size(); i++)
 	{
 		double newWeight =
-			entries[i].getWeight()
+			inputs[i].getWeight()
 			+ (targetValue - outputValue)
-			* entries[i].getInput();
+			* eta
+			* inputs[i].getValue();
 
-		entries[i].setWeight(newWeight);
+		inputs[i].setWeight(newWeight);
 	}
 }
 
-vector <Entry> & Neuron::getEntries() { return this->entries; }
+vector <Input> & Neuron::getInputs() { return this->inputs; }
 double Neuron::getOutputValue() { return this->outputValue; }
 
 double Neuron::getTargetValue() { return this->targetValue; }

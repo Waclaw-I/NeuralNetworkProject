@@ -118,12 +118,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Entry.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Neuron.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Entry.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Neuron.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
