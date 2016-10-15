@@ -26,6 +26,7 @@ private:
 	vector<Input> inputs;
 	double outputValue;
 	double targetValue;
+	bool isFirst;
 
 	static double const minimumWeightValue;
 	static double const maximumWeightValue;

@@ -7,6 +7,7 @@
 
 #include "Neuron.h"
 #include "NetworkManager.h"
+#include "RandomEngine.h"
 
 using namespace std;
 
@@ -15,14 +16,32 @@ void loadTrainingData(string path, vector<vector<double>> & trainingData);
 
 int main()
 {
-	vector<int> networkStructure{ 12,5,5,5, 12, 3 };
-	vector<double> data{ 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5, 12.5, 13.5 };
+    RandomEngine randomEngine(-1.0, 1.0);
+
+	vector<int> networkStructure{ 2, 2, 5, 1 };
+	vector<double> data{ 3, 3 };
 	NetworkManager networkManager(networkStructure);
 
 	networkManager.printNetwork();
 	networkManager.insertData(data);
-	
+
+	networkManager.feedForward();
+	for(int i = 0; i < networkManager.getNetwork().size(); ++i)
+    {
+        for (int j = 0; j < networkManager.getNetwork()[i].size(); ++j)
+        {
+            for (int k = 0; k < networkManager.getNetwork()[i][j].getInputs().size(); ++k)
+            {
+                cout << "\t" << networkManager.getNetwork()[i][j].getInputs()[k].getWeight() << endl;
+            }
+            cout << networkManager.getNetwork()[i][j].getOutputValue() << endl;
+        }
+        cout << endl;
+    }
+
+
 	cin.get();
+
 	/*srand(time(NULL));
 	vector<vector<double>> trainingData;
 	loadTrainingData("ORdata.txt", trainingData);
@@ -71,7 +90,7 @@ int main()
 		cout << "Error: " << delta << endl;
 		neuron.updateWeights();
 	}*/
-	
+
 
 
 
@@ -91,7 +110,7 @@ void loadTrainingData(string path, vector<vector<double>> & trainingData)
 
 		while (!data.eof())
 		{
-			
+
 			data >> temp;
 			if (temp != 32)
 			{

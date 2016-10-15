@@ -1,5 +1,7 @@
 #include "Neuron.h"
 
+#include "math.h"
+
 double const Neuron::minimumWeightValue = -1.0;
 double const Neuron::maximumWeightValue = 1.0;
 double const Neuron::eta = 0.15;
@@ -7,6 +9,7 @@ double const Neuron::alpha = 0.5;
 
 Neuron::Neuron(int inputsAmount, bool isFirst)
 {
+    this->isFirst = isFirst;
 	if (isFirst)
 	{
 		inputs.push_back(Input(1, 1));
@@ -21,14 +24,14 @@ Neuron::Neuron(int inputsAmount, bool isFirst)
 }
 
 void Neuron::activationFunction()
-{ 
-	//this->outputValue = tanh(calculateSum()); 
+{
+	this->outputValue = tanh(calculateSum());
 
-	if (calculateSum() > 0.5) this->outputValue = 1;
-	else this->outputValue = 0;
+	//if (calculateSum() > 0.5) this->outputValue = 1;
+	//else this->outputValue = 0;
 }
 
-double Neuron::calculateSum() 
+double Neuron::calculateSum()
 {
 	double sum = 0;
 	for (int i = 0; i < inputs.size(); i++)
@@ -53,7 +56,15 @@ void Neuron::updateWeights()
 }
 
 vector <Input> & Neuron::getInputs() { return this->inputs; }
-double Neuron::getOutputValue() { return this->outputValue; }
+double Neuron::getOutputValue()
+{
+    if (!isFirst)
+    {
+        activationFunction();
+        return this->outputValue;
+    }
+    else return calculateSum();
+}
 
 double Neuron::getTargetValue() { return this->targetValue; }
 void Neuron::setTargetValue(double targetValue) { this->targetValue = targetValue; }

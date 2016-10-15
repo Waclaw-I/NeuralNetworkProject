@@ -7,7 +7,7 @@ NetworkManager::NetworkManager(vector<int> networkStructure)
 {
 	for (int i = 0; i < networkStructure.size(); ++i)
 	{
-		
+
 		this->network.push_back(vector<Neuron>());
 		for (int j = 0; j < networkStructure[i]; ++j)
 		{
@@ -21,7 +21,16 @@ NetworkManager::NetworkManager(vector<int> networkStructure)
 
 void NetworkManager::feedForward()
 {
-
+    for (int i = 1; i < network.size(); ++i) // for every layer except input layer
+    {
+        for (int j = 0; j < network[i].size(); ++j) // for every neuron in layer
+        {
+            for (int k = 0; k < network[i][j].getInputs().size(); k++) // for every input in neuron
+            {
+                network[i][j].getInputs()[k].setValue(network[i-1][k].getOutputValue());
+            }
+        }
+    }
 }
 
 bool NetworkManager::insertData(vector<double> inputData)

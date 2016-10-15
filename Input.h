@@ -12,7 +12,6 @@ public:
 	void setWeight(double weight);
 
 	double getResult();
-	double randomizeWeight(double minimumWeightValue, double maximumWeightValue);
 
 private:
 	double value;
