@@ -10,8 +10,9 @@ class NetworkManager
 public:
 	NetworkManager() = delete;
 	NetworkManager(vector<int> networkStructure);
-	bool insertData(vector<double> inputData);
+	bool insertData(vector<double> inputData, vector<double> outputData);
 	void feedForward();
+	void updateWeights();
 	void printNetwork();
 
 	vector<vector<Neuron>> & getNetwork();

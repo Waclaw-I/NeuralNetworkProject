@@ -3,7 +3,8 @@
 class Input
 {
 public:
-	Input(double minimumWeightValue, double maximumWeightValue);
+	Input();
+	Input(bool isFirst);
 
 	double getWeight();
 	double getValue();

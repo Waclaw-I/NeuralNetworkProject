@@ -19,25 +19,32 @@ int main()
     RandomEngine randomEngine(-1.0, 1.0);
 
 	vector<int> networkStructure{ 2, 2, 5, 1 };
-	vector<double> data{ 3, 3 };
+	vector<double> data{ 1, 1 }; // input
+	vector<double> target{ 1 }; // our target, ie: 1&1 = 1
 	NetworkManager networkManager(networkStructure);
 
 	networkManager.printNetwork();
-	networkManager.insertData(data);
+	networkManager.insertData(data, target);
 
 	networkManager.feedForward();
+	networkManager.updateWeights();
 	for(int i = 0; i < networkManager.getNetwork().size(); ++i)
     {
         for (int j = 0; j < networkManager.getNetwork()[i].size(); ++j)
         {
+			cout << "Neuron sum:           " << networkManager.getNetwork()[i][j].calculateSum() << endl;
+			cout << "Neuron output:        " << networkManager.getNetwork()[i][j].getOutputValue() << endl;
+			cout << "Neuron signal error:  " << networkManager.getNetwork()[i][j].getSignalError() << endl;
+			cout << "\n";
             for (int k = 0; k < networkManager.getNetwork()[i][j].getInputs().size(); ++k)
             {
-                cout << "\t" << networkManager.getNetwork()[i][j].getInputs()[k].getWeight() << endl;
-            }
-            cout << networkManager.getNetwork()[i][j].getOutputValue() << endl;
+                cout << "\tInput nr: "<< k+1 << " weight: " << networkManager.getNetwork()[i][j].getInputs()[k].getWeight() << endl;
+            } 
         }
         cout << endl;
     }
+
+	
 
 
 	cin.get();

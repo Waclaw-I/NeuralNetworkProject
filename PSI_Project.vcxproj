@@ -122,11 +122,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Neuron.cpp" />
+    <ClCompile Include="RandomEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Input.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Neuron.h" />
+    <ClInclude Include="RandomEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -33,7 +33,29 @@ void NetworkManager::feedForward()
     }
 }
 
-bool NetworkManager::insertData(vector<double> inputData)
+void NetworkManager::updateWeights()
+{
+
+	for (auto &x : network.back())
+	{
+		x.setSignalError(x.getTargetValue() - x.getOutputValue()); // output layer
+	}
+
+	for (int i = network.size() - 2; i >= 0; --i)
+	{
+		for (int j = 0; j < network[i].size(); ++j) // for every neuron
+		{
+			double signalError = 0;
+			for (int k = 0; k < network[i+1].size(); k++) // as many times as next layer neuron's amount
+			{
+				signalError += network[i + 1][k].getInputs()[j].getWeight() * network[i + 1][k].getSignalError();
+			}
+			network[i][j].setSignalError(signalError);
+		}
+	}
+}
+
+bool NetworkManager::insertData(vector<double> inputData, vector<double> targetData)
 {
 	if (inputData.size() != network.front().size())
 	{
@@ -41,12 +63,19 @@ bool NetworkManager::insertData(vector<double> inputData)
 		cout << "Amount of input is not equal to the amount of input neurons!" << endl;
 		return false;
 	}
+	if ((targetData.size() != network.back().size()))
+	{ 
+		cout << " Target Data: " << targetData.size() << " Output neurons: " << network.back().size() << endl;
+		cout << "Amount of targets is not equal to the amount of output neurons!" << endl;
+		return false;
+	}
 	else
 	{
 		for (int i = 0; i < network.front().size(); ++i)
-		{
 			network.front()[i].getInputs().front().setValue(inputData[i]);
-		}
+		for (int i = 0; i < network.back().size(); ++i)
+			network.back()[i].setTargetValue(targetData[i]);
+		
 		return true;
 	}
 }

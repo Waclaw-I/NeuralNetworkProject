@@ -6,9 +6,14 @@ using namespace std;
 
 #include <random>
 
-Input::Input(double minimumWeightValue, double maximumWeightValue)
+Input::Input()
 {
 	this->weight = RandomEngine::getRandomNumber();
+}
+
+Input::Input(bool isFirst)
+{
+	this->weight = 1;
 }
 
 double Input::getWeight() { return this->weight; }
