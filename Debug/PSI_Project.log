@@ -1,0 +1,39 @@
+﻿Build started 06.11.2016 20:14:38.
+     1>Project "C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\PSI_Project\PSI_Project.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Input.cpp Layer.cpp main.cpp McCullohPitts.cpp Network.cpp Neuron.cpp Perceptron.cpp RandomGenerator.cpp
+         RandomGenerator.cpp
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\randomgenerator.cpp(5): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+         Perceptron.cpp
+         Neuron.cpp
+         Network.cpp
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\network.cpp(88): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\network.cpp(107): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\network.cpp(113): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\network.cpp(122): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\network.cpp(137): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\network.cpp(144): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\network.cpp(160): warning C4018: '<': signed/unsigned mismatch
+         McCullohPitts.cpp
+         main.cpp
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(25): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(36): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(83): warning C4018: '<': signed/unsigned mismatch
+         Layer.cpp
+         Input.cpp
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\Debug\PSI_Project.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\Debug\PSI_Project.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\Debug\PSI_Project.lib" /MACHINE:X86 Debug\Input.obj
+         Debug\Layer.obj
+         Debug\main.obj
+         Debug\McCullohPitts.obj
+         Debug\Network.obj
+         Debug\Neuron.obj
+         Debug\Perceptron.obj
+         Debug\RandomGenerator.obj
+         PSI_Project.vcxproj -> C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\Debug\PSI_Project.exe
+     1>Done Building Project "C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\PSI_Project\PSI_Project.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.02
