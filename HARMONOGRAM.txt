@@ -1,0 +1,11 @@
+HARMONOGRAM SIECI NEURONOWE:
+
+Sieæ rozpoznaj¹ca cyfry od 0 do 9 w oparciu o bitmapê 16x16 (czarno-bia³¹)
+
+1. Zaimplementowaæ model neuronu (McCulloh, Perceptron), przetestowaæ dla bramek logicznych
+2. Zaimplementowaæ klasê warstwy, klasê sieci, poszerzyæ klasê neuronu o wybieranie funkcji aktywacji
+3. Zaimplementowaæ algorytm wstecznej propagacji b³êdu
+4. Stworzyæ GUI do pracy ze zbiorem ucz¹cym
+5. Mo¿liwosæ uzupe³niania zbioru ucz¹cego o w³asne przyk³ady
+6. Rysowanie wykresów obrazuj¹cych postêp uczenia (b³¹d na wyjœciu / epoka)
+7. Dalsze prace nad zwiêkszeniem dok³adnoœci sieci neuronowej

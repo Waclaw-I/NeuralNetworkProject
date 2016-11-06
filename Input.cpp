@@ -1,24 +1,27 @@
 #include "Input.h"
-#include "RandomEngine.h"
 
-#include <iostream>
-using namespace std;
+#include "RandomGenerator.h"
 
-#include <random>
-
-Input::Input()
+Input::Input(double entryValue): entryValue(entryValue)
 {
-	this->weight = RandomEngine::getRandomNumber();
+	this->randomizeWeight();
 }
-
-Input::Input(bool isFirst)
+Input::Input(bool isInInputLayer)
 {
-	this->weight = 1;
+	if (isInInputLayer) this->weight = 1;
+	else this->randomizeWeight();
 }
+Input::Input() { this->randomizeWeight(); }
 
-double Input::getWeight() { return this->weight; }
-double Input::getValue() { return this->value; }
-void Input::setValue(double input) { this->value = input; }
-void Input::setWeight(double weight) { this->weight = weight; }
-double Input::getResult() { return (this->value * this->weight); }
+double Input::getWeight() const { return this->weight; }
+void Input::setWeight(double weight)  { this->weight = weight; }
+void Input::updateWeight(double delta) { this->weight += delta; }
+void Input::setEntryValue(double entryValue) { this->entryValue = entryValue; }
+double Input::getEntryValue() const { return this->entryValue; }
+double Input::getReturnValue() const { return (this->weight * this->entryValue); }
 
+
+void Input::randomizeWeight()
+{
+	this->weight = RandomGenerator::getRandomNumber();
+}

@@ -3,34 +3,30 @@
 
 #include "Input.h"
 
-using namespace std;
 
 class Neuron
 {
-
 public:
-	Neuron(int inputsAmount, bool isFirst = false);
-
-	void activationFunction();
-	void updateWeights();
-	void setSignalError(double signalError);
-	double calculateSum();
-
-	vector<Input> & getInputs();
-	double getOutputValue();
-	double getTargetValue();
-	double getSignalError();
+	Neuron(int entriesAmount);
+	Neuron(int entriesAmount, bool isInInputLayer);
+	std::vector<Input> & getEntries();
+	int getEntriesAmount() const;
+	double getOutputValue() const;
+	void setOutput(double value); // for input neurons only. With this, there is no need for setting up weights for the first layer
+	double getTargetValue() const;
 	void setTargetValue(double targetValue);
-
-
-private:
-
-	vector<Input> inputs;
+	void calculateSignalError();
+	void setSignalError(double error);
+	double getSignalError();
+	virtual void calculateOutput() = 0;
+	virtual void updateWeights() = 0;
+protected:
+	std::vector<Input> entries;
 	double outputValue;
 	double targetValue;
 	double signalError;
-	bool isFirst;
+	double entriesSumValue;
+	double calculateSum();
+	virtual double derivativeFunc();
 
-	static double const eta; // learning rate
-	//static double const alpha; // momentum
 };

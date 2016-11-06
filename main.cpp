@@ -1,109 +1,137 @@
 #include <iostream>
-#include <fstream>
+#include <memory>
 
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
-
+#include "RandomGenerator.h"
 #include "Neuron.h"
-#include "NetworkManager.h"
-#include "RandomEngine.h"
+#include "Input.h"
+#include "Perceptron.h"
+#include "McCullohPitts.h"
+#include "Network.h"
+#include "fstream"
 
 using namespace std;
 
 void loadTrainingData(string path, vector<vector<double>> & trainingData);
-
+void SingleNeuronNet(Neuron * neuron);
 
 int main()
 {
-    RandomEngine randomEngine(-1.0, 1.0);
+	Network network(2, 2, 3, 1); // inputs, hidden layers, neuron in each hidden layer, outputs
+	vector<vector<double>> trainingData;
+	loadTrainingData("XORdata.txt", trainingData);
 
-	vector<int> networkStructure{ 2, 2, 5, 1 };
-	vector<double> data{ 1, 1 }; // input
-	vector<double> target{ 1 }; // our target, ie: 1&1 = 1
-	NetworkManager networkManager(networkStructure);
+	vector<vector<double>> inputData;
+	vector<double> outputData;
+	for (int i = 0; i < trainingData.size(); ++i)
+	{
+		vector<double> temp;
+		temp.push_back(trainingData[i][0]);
+		temp.push_back(trainingData[i][1]);
+		inputData.push_back(temp);
+		outputData.emplace_back(trainingData[i][2]);
+	}
 
-	networkManager.printNetwork();
-	networkManager.insertData(data, target);
+	for (int epoch = 1; epoch < 100; ++epoch)
+	{
+		for (int i = 0; i < trainingData.size(); i++)
+		{
+			if (!network.setInputValues( inputData[i] )) std::cout << "Sizes of input values and input neurons are not equal!" << std::endl;
+			if (!network.setTargetValues({ outputData[i] })) std::cout << "Sizes of target values and output neurons are not equal!" << std::endl;
 
-	networkManager.feedForward();
-	networkManager.updateWeights();
-	for(int i = 0; i < networkManager.getNetwork().size(); ++i)
-    {
-        for (int j = 0; j < networkManager.getNetwork()[i].size(); ++j)
-        {
-			cout << "Neuron sum:           " << networkManager.getNetwork()[i][j].calculateSum() << endl;
-			cout << "Neuron output:        " << networkManager.getNetwork()[i][j].getOutputValue() << endl;
-			cout << "Neuron signal error:  " << networkManager.getNetwork()[i][j].getSignalError() << endl;
-			cout << "\n";
-            for (int k = 0; k < networkManager.getNetwork()[i][j].getInputs().size(); ++k)
-            {
-                cout << "\tInput nr: "<< k+1 << " weight: " << networkManager.getNetwork()[i][j].getInputs()[k].getWeight() << endl;
-            } 
-        }
-        cout << endl;
-    }
+			network.feedForward();
+			network.updateWeights();
 
-	
+			cout << network.getInputLayer().getNeurons()[0].getOutputValue() << endl;
+			cout << network.getInputLayer().getNeurons()[1].getOutputValue() << endl;
+			cout << "Output: " << network.getOutputLayer().getNeurons()[0].getOutputValue() << endl;
+			
+		}
+		
+	}
 
+
+
+
+
+
+
+
+
+
+
+
+	//unique_ptr<Perceptron> perceptron(new Perceptron(2));
+	//unique_ptr<McCullohPitts> mcCullohPitts(new McCullohPitts(2));
+
+	//SingleNeuronNet(perceptron.get());
+	//SingleNeuronNet(mcCullohPitts.get());
 
 	cin.get();
-
-	/*srand(time(NULL));
-	vector<vector<double>> trainingData;
-	loadTrainingData("ORdata.txt", trainingData);
-
-
-	Neuron neuron(2);
-
-	for (int i = 0; i < trainingData.size(); i++)
-	{
-		for (int j = 0; j < neuron.getEntries().size(); j++)
-		{
-			neuron.getEntries()[j].setInput(trainingData[i][j]);
-		}
-		neuron.setTargetValue(trainingData[i][2]);
-		neuron.activationFunction();
-
-		cout << "\n######## Epoch number: " << i + 1 << " ########\n" << endl;
-		cout << "Input: " << neuron.getEntries()[0].getInput() << " " << neuron.getEntries()[1].getInput() << endl;
-		cout << "Output: " << neuron.getOutputValue() << endl;
-		cout << "Target: " << neuron.getTargetValue() << endl;
-		cout << "Error: " << (trainingData[i][2] - neuron.getOutputValue()) << endl;
-		cout << "Wages: " << neuron.getEntries()[0].getWeight() << "  " << neuron.getEntries()[1].getWeight() << endl;
-		neuron.updateWeights();*/
-
-	//}
-
-	/*Neuron neuron(1);
-	double delta = 1;
-	int i = 0;
-	while ( delta > 0.01)
-	{
-		i++;
-		int n1 = (int)(2.0 * rand() / double(RAND_MAX));
-		int t = !n1;
-
-		neuron.getEntries()[0].setInput(n1);
-		neuron.setTargetValue(t);
-		neuron.activationFunction();
-
-		delta = abs(neuron.getOutputValue() - neuron.getTargetValue());
-
-		cout << "\n######## Epoch number: " << i + 1 << " ########\n" << endl;
-		cout << "Input: " << neuron.getEntries()[0].getInput() << endl;
-		cout << "Output: " << neuron.getOutputValue() << endl;
-		cout << "Target: " << neuron.getTargetValue() << endl;
-		cout << "Error: " << delta << endl;
-		neuron.updateWeights();
-	}*/
-
-
-
-
-	//cin.get();
-
 }
+
+void SingleNeuronNet(Neuron * neuron)
+{
+	vector<vector<double>> trainingData;
+	loadTrainingData("ANDdata.txt", trainingData);
+
+	for (int epoch = 1; epoch < 20; ++epoch)
+	{
+		double MSE = 0;
+		// how to avoid dividing by 0 in MAPE error prediction?
+		//double MAPE = 0;
+		cout << "\n######## Epoch number: " << epoch << " ########\n" << endl;
+		for (int i = 0; i < trainingData.size(); i++)
+		{
+			double uniqueMSEerror = 0;
+			//double uniqueMAPEerror = 0;
+			for (int j = 0; j < neuron->getEntriesAmount(); j++)
+			{
+				neuron->getEntries()[j].setEntryValue(trainingData[i][j]);
+			}
+			neuron->setTargetValue(trainingData[i][2]);
+			neuron->calculateOutput();
+			neuron->updateWeights();
+
+			//uniqueMAPEerror = abs((neuron->getOutputValue() - neuron->getTargetValue()) / neuron->getOutputValue());
+			uniqueMSEerror = pow(neuron->getOutputValue() - neuron->getTargetValue(), 2);
+			MSE += uniqueMSEerror;
+			//MAPE += uniqueMAPEerror;
+		}
+		//cout << "MAPE: " << MAPE / trainingData.size() << endl;
+		cout << "MSE: " << MSE / trainingData.size() << endl;
+		cout << "Input: " << neuron->getEntries()[0].getEntryValue() << " " << neuron->getEntries()[1].getEntryValue() << endl;
+		cout << "Output: " << neuron->getOutputValue() << endl;
+		cout << "Target: " << neuron->getTargetValue() << endl;
+		cout << "Wages: " << neuron->getEntries()[0].getWeight() << "  " << neuron->getEntries()[1].getWeight() << endl;
+	}
+
+	cin.get();
+	cout << "TRAINING COMPLETED\n\n\n";
+
+	vector<bool> inputs;
+	bool temp;
+	cout << "Input 1: ";
+	cin >> temp;
+	inputs.push_back(temp);
+	cout << "Input 2: ";
+	cin >> temp;
+	inputs.push_back(temp);
+
+	int i = 0;
+	for (auto &entry: neuron->getEntries())
+	{
+		entry.setEntryValue(inputs[i]);
+		++i;
+	}
+
+	neuron->calculateOutput();
+	double result = neuron->getOutputValue();
+	if (result > 0.99) result = 1;
+	cout << "Result:	" << result;
+	cin.get();
+	
+}
+
 
 void loadTrainingData(string path, vector<vector<double>> & trainingData)
 {
@@ -135,4 +163,5 @@ void loadTrainingData(string path, vector<vector<double>> & trainingData)
 	{
 		cout << "Nie mozna otworzyc pliku!" << endl;
 	}
+	
 }

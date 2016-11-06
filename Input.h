@@ -3,18 +3,19 @@
 class Input
 {
 public:
+	Input(double entryValue);
+	Input(bool isInInputLayer);
 	Input();
-	Input(bool isFirst);
 
-	double getWeight();
-	double getValue();
-
-	void setValue(double value);
+	double getWeight() const;
 	void setWeight(double weight);
-
-	double getResult();
-
+	void updateWeight(double delta);
+	void setEntryValue(double entryValue);
+	double getReturnValue() const;
+	double getEntryValue() const;
 private:
-	double value;
+	double entryValue;
 	double weight;
+
+	void randomizeWeight();
 };
