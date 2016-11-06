@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "RandomGenerator.h"
 #include "Neuron.h"
@@ -12,6 +13,7 @@
 using namespace std;
 
 void loadTrainingData(string path, vector<vector<double>> & trainingData);
+void saveMSEtoFile(string MSE);
 void SingleNeuronNet(Neuron * neuron);
 
 int main()
@@ -31,21 +33,30 @@ int main()
 		outputData.emplace_back(trainingData[i][2]);
 	}
 
-	for (int epoch = 1; epoch < 100; ++epoch)
+	for (int epoch = 1; epoch < 2000; ++epoch)
 	{
+		double MSE = 0;
 		for (int i = 0; i < trainingData.size(); i++)
 		{
+			double uniqueMSEerror;
 			if (!network.setInputValues( inputData[i] )) std::cout << "Sizes of input values and input neurons are not equal!" << std::endl;
 			if (!network.setTargetValues({ outputData[i] })) std::cout << "Sizes of target values and output neurons are not equal!" << std::endl;
+			// TODO: NETWORK CLASS SHOULD HAVE ITS OWN CONTAINERS FOR TRAINING DATASET TO AVOID LOADING EACH ITERATION
 
 			network.feedForward();
 			network.updateWeights();
 
-			cout << network.getInputLayer().getNeurons()[0].getOutputValue() << endl;
-			cout << network.getInputLayer().getNeurons()[1].getOutputValue() << endl;
-			cout << "Output: " << network.getOutputLayer().getNeurons()[0].getOutputValue() << endl;
-			
+			uniqueMSEerror = pow(network.getOutputLayer().getNeurons()[0].getOutputValue() - network.getOutputLayer().getNeurons()[0].getTargetValue(), 2);
+			MSE += uniqueMSEerror;
+			for (int inputs = 0; inputs < network.getInputLayer().getSize(); ++inputs)
+				cout << "Input " << inputs + 1 << ": " << network.getInputLayer().getNeurons()[inputs].getOutputValue() << endl;
+			for (int outputs = 0; outputs < network.getOutputLayer().getSize(); ++outputs)
+				cout << "Output " << outputs + 1 << ": " << network.getOutputLayer().getNeurons()[outputs].getOutputValue() << "\n\n";
 		}
+
+		
+		cout << "MSE: " << MSE / trainingData.size() << endl;
+		saveMSEtoFile(to_string(MSE));
 		
 	}
 
@@ -145,12 +156,9 @@ void loadTrainingData(string path, vector<vector<double>> & trainingData)
 
 		while (!data.eof())
 		{
-
 			data >> temp;
 			if (temp != 32)
-			{
 				row.push_back(temp);
-			}
 
 			if (row.size() == 3)
 			{
@@ -160,8 +168,12 @@ void loadTrainingData(string path, vector<vector<double>> & trainingData)
 		}
 	}
 	else
-	{
 		cout << "Nie mozna otworzyc pliku!" << endl;
-	}
-	
+}
+
+void saveMSEtoFile(string MSE)
+{
+	fstream MSEFile;
+	MSEFile.open("MSE.txt", ios::out | ios_base::app);
+	MSEFile << MSE << endl;
 }
