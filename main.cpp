@@ -2,6 +2,8 @@
 #include <memory>
 #include <string>
 #include <fstream>
+#include <algorithm>
+#include <chrono>
 
 #include "RandomGenerator.h"
 #include "Neuron.h"
@@ -17,37 +19,110 @@ using namespace std;
 void loadTrainingData(string path, vector<vector<double>> & trainingData);
 void saveMSEtoFile(string MSE);
 void SingleNeuronNet(Neuron * neuron);
+double epochAmount = 3;
+
+chrono::duration<double> totalTime;
+chrono::duration<double> epochTime;
 
 int main()
 {
-	Network network(256, 5, 15, 10); // inputs, hidden layers, neuron in each hidden layer, outputs
+	chrono::time_point<chrono::system_clock> start, end;
 
-	for (int epoch = 1; epoch < 10; ++epoch)
+	Network network(256, 1, 15, 10); // inputs, hidden layers, neuron in each hidden layer, outputs
+	int outputsAmount = network.dataSetManager.outputsAmount;
+	int records = network.dataSetManager.learningRecords;
+	auto & outputNeurons = network.getOutputLayer().getNeurons();
+	for (int epoch = 1; epoch <= epochAmount; ++epoch)
 	{
+		start = chrono::system_clock::now();
+		cout <<"Overall proggress: " <<  static_cast<double>(epoch / epochAmount) * 100 << "%\n\n";
+		cout << "Current epoch: " << epoch << endl;
 		double MSE = 0;
-		int records = network.dataSetManager.learningRecords;
+		
 
 		for (int i = 0; i < records; i++)
 		{
-			double uniqueMSEerror;
 			network.setInputValues(i, true);
 			network.setTargetValues(i, true);
 
 			network.feedForward();
 			network.updateWeights();
 
-			uniqueMSEerror = pow(network.getOutputLayer().getNeurons()[0].getOutputValue() - network.getOutputLayer().getNeurons()[0].getTargetValue(), 2);
-			MSE += uniqueMSEerror;
-			network.dataSetManager.displayOneInputRecord(i);
-			Layer & outputLayer = network.getOutputLayer();
-			for (int outputs = 0; outputs < outputLayer.getSize(); ++outputs)
-				cout << "Output " << outputs << ": " << outputLayer.getNeurons()[outputs].getOutputValue() << "\n\n";
-			network.dataSetManager.displayOneOutputRecord(i);
-			cout << "\n\n";
+			double uniqueMSEerror;
+			for (int j = 0; j < outputsAmount; ++j)
+			{
+				uniqueMSEerror = pow(outputNeurons[j].getOutputValue() - outputNeurons[j].getTargetValue(), 2);
+				MSE += uniqueMSEerror;
+			}
 		}
-
-		cout << "MSE: " << MSE / records << endl;
+		MSE /= records;
+		end = chrono::system_clock::now();
+		epochTime = end - start;
+		totalTime += epochTime;
+		system("cls");
+		
+		cout << "Epoch " << epoch << " MSE: " << MSE << endl;
+		cout << "Epoch " << epoch << " Time: " << epochTime.count() << endl;
 		saveMSEtoFile(to_string(MSE));
+	}
+	int validationRecords = network.dataSetManager.validationRecords;
+	system("cls");
+	cout << "\n\nOverall learning time: " << totalTime.count() << "\n\n";
+	cout << "############## VALIDATION RECORDS ##############" << "\n\n";
+
+	double overallCorrectAnswers = 0;
+	double overallFalseAnswers = 0;
+
+	vector<double> uniqueDigitCorrectAnswers(10);
+	vector<double> uniqueDigitFalseAnswers(10);
+
+	auto networkAnswer = [](auto & outputNeurons)
+	{
+		double answer = 0;
+		for (int i = 0; i < 10; ++i)
+			outputNeurons[answer].getOutputValue() > outputNeurons[i].getOutputValue() ? answer = answer : answer = i;
+		return answer;
+	};
+
+	auto targetAnswer = [](auto & targetOutputs)
+	{
+		double answer = 0;
+		for (int i = 0; i < 10; ++i)
+			if (targetOutputs[i] == 1) answer = i;
+		return answer;
+	};
+
+	for (int i = 0; i < validationRecords; i++)
+	{
+		auto & targetOutputs = network.dataSetManager.validationOutputDataSet[i];
+
+		network.setInputValues(i, false);
+		network.setTargetValues(i, false); // validation, not learning
+
+		network.feedForward();
+
+		int answerDigit = networkAnswer(outputNeurons);
+		int targetDigit = targetAnswer(targetOutputs);
+		if (answerDigit == targetDigit)
+		{
+			uniqueDigitCorrectAnswers[answerDigit]++;
+			overallCorrectAnswers++;
+		}
+		else
+		{
+			uniqueDigitFalseAnswers[targetDigit]++;
+			overallFalseAnswers++;
+		}
+	}
+
+	cout << "Correct: " << overallCorrectAnswers << endl;
+	cout << "False: " << overallFalseAnswers << endl;
+	cout << "Network effectiveness: " << static_cast<double>(overallCorrectAnswers / (overallCorrectAnswers + overallFalseAnswers)) * 100 << "%\n\n";
+
+	cout << "DIGIT : CORRECT | FALSE\n\n";
+	for (int i = 0; i < 10; ++i)
+	{
+		cout << i << " : \t" << uniqueDigitCorrectAnswers[i] << "  \t" << uniqueDigitFalseAnswers[i] << endl;
 	}
 
 	cin.get();
