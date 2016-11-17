@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DataSetManager.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Layer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -128,6 +129,7 @@
     <ClCompile Include="RandomGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DataSetManager.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="McCullohPitts.h" />

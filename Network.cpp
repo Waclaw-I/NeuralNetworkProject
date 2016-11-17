@@ -8,6 +8,8 @@ Layer & Network::getOutputLayer() { return this->outputLayer; }
 
 Network::Network(int inputs, int hiddenLayers, int neuronInEachHiddenLayer, int outputs)
 {
+	dataSetManager.importData("digits.txt");
+
 	this->inputLayer.fillInputLayer(inputs);
 
 	for (int i = 0; i < hiddenLayers; ++i)
@@ -28,29 +30,29 @@ Network::Network(int inputs, int hiddenLayers, int neuronInEachHiddenLayer, int 
 	this->outputLayer.fillLayer(outputs, this->hiddenLayers.back().getSize());
 }
 
-bool Network::setInputValues(std::vector<double> inputValues)
+void Network::setInputValues(int record, bool isLearning)
 {
-	if (this->inputLayer.getSize() != inputValues.size())
-		return false;
+	vector<vector<double>> & data = dataSetManager.inputDataSet;
+	if (!isLearning) data = dataSetManager.validationInputDataSet;
 
-	for (int i = 0; i < this->inputLayer.getSize(); ++i)
+	double inputsAmount = dataSetManager.inputsAmount;
+	for (int i = 0; i < inputsAmount; ++i)
 	{
-		this->inputLayer.getNeurons()[i].getEntries()[0].setEntryValue(inputValues[i]);
-		this->inputLayer.getNeurons()[i].setOutput(inputValues[i]);
+		this->inputLayer.getNeurons()[i].getEntries()[0].setEntryValue(data[record][i]);
+		this->inputLayer.getNeurons()[i].setOutput(data[record][i]); // just to be sure data is set properly
 	}
-	return true;
 }
 
-bool Network::setTargetValues(std::vector<double> targetValues)
+void Network::setTargetValues(int record, bool isLearning)
 {
-	if (this->outputLayer.getSize() != targetValues.size())
-		return false;
+	vector<vector<double>> & data = dataSetManager.outputDataSet;
+	if (!isLearning) data = dataSetManager.validationOutputDataSet;
 
-	for (int i = 0; i < this->outputLayer.getSize(); ++i)
+	double outputsAmount = dataSetManager.outputsAmount;
+	for (int i = 0; i < outputsAmount; ++i)
 	{
-		this->outputLayer.getNeurons()[i].setTargetValue(targetValues[i]);
+		this->outputLayer.getNeurons()[i].setTargetValue(data[record][i]);
 	}
-	return true;
 }
 
 void Network::feedForward()

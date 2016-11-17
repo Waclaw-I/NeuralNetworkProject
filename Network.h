@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Layer.h"
+#include "DataSetManager.h"
 
 
 class Network
@@ -11,10 +12,12 @@ public:
 	Layer & getInputLayer();
 	Layer & getOutputLayer();
 
-	bool setInputValues(std::vector<double>);
-	bool setTargetValues(std::vector<double> targetValues);
+	void setInputValues(int record, bool isLearning);
+	void setTargetValues(int record, bool isLearning);
 	void feedForward();
 	void updateWeights();
+
+	DataSetManager dataSetManager;
 private:
 
 	Layer inputLayer;

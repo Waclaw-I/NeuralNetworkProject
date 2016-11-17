@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <fstream>
 
 #include "RandomGenerator.h"
 #include "Neuron.h"
@@ -8,7 +9,8 @@
 #include "Perceptron.h"
 #include "McCullohPitts.h"
 #include "Network.h"
-#include "fstream"
+#include "DataSetManager.h"
+
 
 using namespace std;
 
@@ -18,64 +20,35 @@ void SingleNeuronNet(Neuron * neuron);
 
 int main()
 {
-	Network network(2, 2, 3, 1); // inputs, hidden layers, neuron in each hidden layer, outputs
-	vector<vector<double>> trainingData;
-	loadTrainingData("XORdata.txt", trainingData);
+	Network network(256, 5, 15, 10); // inputs, hidden layers, neuron in each hidden layer, outputs
 
-	vector<vector<double>> inputData;
-	vector<double> outputData;
-	for (int i = 0; i < trainingData.size(); ++i)
-	{
-		vector<double> temp;
-		temp.push_back(trainingData[i][0]);
-		temp.push_back(trainingData[i][1]);
-		inputData.push_back(temp);
-		outputData.emplace_back(trainingData[i][2]);
-	}
-
-	for (int epoch = 1; epoch < 2000; ++epoch)
+	for (int epoch = 1; epoch < 10; ++epoch)
 	{
 		double MSE = 0;
-		for (int i = 0; i < trainingData.size(); i++)
+		int records = network.dataSetManager.learningRecords;
+
+		for (int i = 0; i < records; i++)
 		{
 			double uniqueMSEerror;
-			if (!network.setInputValues( inputData[i] )) std::cout << "Sizes of input values and input neurons are not equal!" << std::endl;
-			if (!network.setTargetValues({ outputData[i] })) std::cout << "Sizes of target values and output neurons are not equal!" << std::endl;
-			// TODO: NETWORK CLASS SHOULD HAVE ITS OWN CONTAINERS FOR TRAINING DATASET TO AVOID LOADING EACH ITERATION
+			network.setInputValues(i, true);
+			network.setTargetValues(i, true);
 
 			network.feedForward();
 			network.updateWeights();
 
 			uniqueMSEerror = pow(network.getOutputLayer().getNeurons()[0].getOutputValue() - network.getOutputLayer().getNeurons()[0].getTargetValue(), 2);
 			MSE += uniqueMSEerror;
-			for (int inputs = 0; inputs < network.getInputLayer().getSize(); ++inputs)
-				cout << "Input " << inputs + 1 << ": " << network.getInputLayer().getNeurons()[inputs].getOutputValue() << endl;
-			for (int outputs = 0; outputs < network.getOutputLayer().getSize(); ++outputs)
-				cout << "Output " << outputs + 1 << ": " << network.getOutputLayer().getNeurons()[outputs].getOutputValue() << "\n\n";
+			network.dataSetManager.displayOneInputRecord(i);
+			Layer & outputLayer = network.getOutputLayer();
+			for (int outputs = 0; outputs < outputLayer.getSize(); ++outputs)
+				cout << "Output " << outputs << ": " << outputLayer.getNeurons()[outputs].getOutputValue() << "\n\n";
+			network.dataSetManager.displayOneOutputRecord(i);
+			cout << "\n\n";
 		}
 
-		
-		cout << "MSE: " << MSE / trainingData.size() << endl;
+		cout << "MSE: " << MSE / records << endl;
 		saveMSEtoFile(to_string(MSE));
-		
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-	//unique_ptr<Perceptron> perceptron(new Perceptron(2));
-	//unique_ptr<McCullohPitts> mcCullohPitts(new McCullohPitts(2));
-
-	//SingleNeuronNet(perceptron.get());
-	//SingleNeuronNet(mcCullohPitts.get());
 
 	cin.get();
 }
@@ -142,8 +115,6 @@ void SingleNeuronNet(Neuron * neuron)
 	cin.get();
 	
 }
-
-
 void loadTrainingData(string path, vector<vector<double>> & trainingData)
 {
 	fstream data;
