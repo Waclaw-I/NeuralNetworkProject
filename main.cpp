@@ -19,7 +19,7 @@ using namespace std;
 void loadTrainingData(string path, vector<vector<double>> & trainingData);
 void saveMSEtoFile(string MSE);
 void SingleNeuronNet(Neuron * neuron);
-double epochAmount = 3;
+double epochAmount = 10;
 
 chrono::duration<double> totalTime;
 chrono::duration<double> epochTime;
@@ -30,7 +30,7 @@ int main()
 
 	Network network(256, 1, 15, 10); // inputs, hidden layers, neuron in each hidden layer, outputs
 	int outputsAmount = network.dataSetManager.outputsAmount;
-	int records = network.dataSetManager.learningRecords;
+	double records = network.dataSetManager.learningRecords;
 	auto & outputNeurons = network.getOutputLayer().getNeurons();
 	for (int epoch = 1; epoch <= epochAmount; ++epoch)
 	{
@@ -38,6 +38,7 @@ int main()
 		cout <<"Overall proggress: " <<  static_cast<double>(epoch / epochAmount) * 100 << "%\n\n";
 		cout << "Current epoch: " << epoch << endl;
 		double MSE = 0;
+		//double MAPE = 0;
 		
 
 		for (int i = 0; i < records; i++)
@@ -49,19 +50,26 @@ int main()
 			network.updateWeights();
 
 			double uniqueMSEerror;
+			double uniqueMAPEerror;
 			for (int j = 0; j < outputsAmount; ++j)
 			{
-				uniqueMSEerror = pow(outputNeurons[j].getOutputValue() - outputNeurons[j].getTargetValue(), 2);
+				double difference = outputNeurons[j].getTargetValue() - outputNeurons[j].getOutputValue();
+				uniqueMSEerror = pow(difference, 2);
+				//uniqueMAPEerror = abs(difference / outputNeurons[j].getTargetValue()); //NOT WORKING DUE TO DIVIDING BY 0
+				//MAPE += uniqueMAPEerror;
 				MSE += uniqueMSEerror;
 			}
 		}
-		MSE /= records;
+		MSE /= (records);
+		//MAPE /= (records*10);
+		//MAPE *= 100;
 		end = chrono::system_clock::now();
 		epochTime = end - start;
 		totalTime += epochTime;
 		system("cls");
 		
 		cout << "Epoch " << epoch << " MSE: " << MSE << endl;
+		//cout << "Epoch " << epoch << " MAPE: " << MAPE << "%" << endl;
 		cout << "Epoch " << epoch << " Time: " << epochTime.count() << endl;
 		saveMSEtoFile(to_string(MSE));
 	}
