@@ -16,6 +16,8 @@ public:
 	void setTargetValues(int record, bool isLearning);
 	void feedForward();
 	void updateWeights();
+	void updateWeightsHebbsRuleNoTeacher();
+	void updateWeightsHebbsRuleWithTeacher();
 
 	DataSetManager dataSetManager;
 private:
@@ -25,4 +27,5 @@ private:
 	std::vector<Layer> hiddenLayers;
 
 	void updateSignalErrors();
+	void updateAdalineSignalErrors();
 };

@@ -19,7 +19,7 @@ using namespace std;
 void loadTrainingData(string path, vector<vector<double>> & trainingData);
 void saveMSEtoFile(string MSE);
 void SingleNeuronNet(Neuron * neuron);
-double epochAmount = 10;
+double epochAmount = 100;
 
 chrono::duration<double> totalTime;
 chrono::duration<double> epochTime;
@@ -47,7 +47,7 @@ int main()
 			network.setTargetValues(i, true);
 
 			network.feedForward();
-			network.updateWeights();
+			network.updateWeightsHebbsRuleWithTeacher();
 
 			double uniqueMSEerror;
 			double uniqueMAPEerror;
@@ -55,14 +55,10 @@ int main()
 			{
 				double difference = outputNeurons[j].getTargetValue() - outputNeurons[j].getOutputValue();
 				uniqueMSEerror = pow(difference, 2);
-				//uniqueMAPEerror = abs(difference / outputNeurons[j].getTargetValue()); //NOT WORKING DUE TO DIVIDING BY 0
-				//MAPE += uniqueMAPEerror;
 				MSE += uniqueMSEerror;
 			}
 		}
 		MSE /= (records);
-		//MAPE /= (records*10);
-		//MAPE *= 100;
 		end = chrono::system_clock::now();
 		epochTime = end - start;
 		totalTime += epochTime;

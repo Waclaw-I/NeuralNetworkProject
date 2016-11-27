@@ -81,6 +81,7 @@ void Network::feedForward()
 
 			
 			this->hiddenLayers[layer].getNeurons()[neuron].calculateOutput();
+
 		}
 	}
 
@@ -132,6 +133,45 @@ void Network::updateSignalErrors()
 	}
 }
 
+
+void Network::updateAdalineSignalErrors()
+{
+	for (auto & output : this->outputLayer.getNeurons())
+	{
+		output.calculateAdalineSignalError();
+	}
+	int lastHiddenLayer = this->hiddenLayers.size() - 1;
+
+	for (int layer = lastHiddenLayer; layer >= 0; --layer)
+	{
+		std::vector<McCullohPitts> & actualHiddenLayerNeurons = this->hiddenLayers[layer].getNeurons();
+		for (int neuron = 0; neuron < actualHiddenLayerNeurons.size(); ++neuron)
+		{
+			double adalineSignalError = 0;
+			if (layer == lastHiddenLayer)
+			{
+				std::vector<McCullohPitts> & outputLayerNeurons = this->outputLayer.getNeurons();
+				for (int i = 0; i < outputLayerNeurons.size(); ++i)
+				{
+					adalineSignalError += outputLayerNeurons[i].getEntries()[neuron].getWeight()
+						* outputLayerNeurons[i].getAdalineSignalError();
+				}
+			}
+			else
+			{
+				std::vector<McCullohPitts> & nextHiddenLayerNeurons = this->hiddenLayers[layer + 1].getNeurons();
+				for (int i = 0; i < nextHiddenLayerNeurons.size(); ++i)
+				{
+					adalineSignalError += nextHiddenLayerNeurons[i].getEntries()[neuron].getWeight()
+						* nextHiddenLayerNeurons[i].getAdalineSignalError();
+				}
+			}
+			actualHiddenLayerNeurons[neuron].setAdalineSignalError(adalineSignalError);
+			//cout << actualHiddenLayerNeurons[neuron].getAdalineSignalError() << endl;
+		}
+	}
+}
+
 void Network::updateWeights()
 {
 	updateSignalErrors();
@@ -150,7 +190,7 @@ void Network::updateWeights()
 					* neurons[j].getSignalError()
 					* neurons[j].derivativeFunc()
 					* inputs[k].getEntryValue();
-				this->hiddenLayers[i].getNeurons()[j].getEntries()[k].setWeight(newWeight);
+				neurons[j].getEntries()[k].setWeight(newWeight);
 			}
 		}
 	}
@@ -166,7 +206,79 @@ void Network::updateWeights()
 				* neurons[i].getSignalError()
 				* neurons[i].derivativeFunc()
 				* inputs[j].getEntryValue();
-			this->outputLayer.getNeurons()[i].getEntries()[j].setWeight(newWeight);
+			neurons[i].getEntries()[j].setWeight(newWeight);
+		}
+	}
+}
+
+void Network::updateWeightsHebbsRuleNoTeacher()
+{
+	for (int i = 0; i < this->hiddenLayers.size(); ++i)
+	{
+		int layerSize = this->hiddenLayers[i].getSize();
+		for (int j = 0; j < layerSize; ++j)
+		{
+			std::vector<Input> & inputs = this->hiddenLayers[i].getNeurons()[j].getEntries();
+			std::vector<McCullohPitts> & neurons = this->hiddenLayers[i].getNeurons();
+			for (int k = 0; k < inputs.size(); ++k)
+			{
+				double newWeight = inputs[k].getWeight()
+					+ 0.1
+					* neurons[j].getOutputValue()
+					* inputs[k].getEntryValue();
+				neurons[j].getEntries()[k].setWeight(newWeight);
+			}
+		}
+	}
+
+	for (int i = 0; i < this->outputLayer.getSize(); ++i)
+	{
+		std::vector<Input> & inputs = this->outputLayer.getNeurons()[i].getEntries();
+		std::vector<McCullohPitts> & neurons = this->outputLayer.getNeurons();
+		for (int j = 0; j < inputs.size(); ++j)
+		{
+			double newWeight = inputs[j].getWeight()
+				+ 0.1
+				* neurons[i].getOutputValue()
+				* inputs[j].getEntryValue();
+			neurons[i].getEntries()[j].setWeight(newWeight);
+		}
+	}
+}
+
+void Network::updateWeightsHebbsRuleWithTeacher()
+{
+	updateAdalineSignalErrors();
+
+	for (int i = 0; i < this->hiddenLayers.size(); ++i)
+	{
+		int layerSize = this->hiddenLayers[i].getSize();
+		for (int j = 0; j < layerSize; ++j)
+		{
+			std::vector<Input> & inputs = this->hiddenLayers[i].getNeurons()[j].getEntries();
+			std::vector<McCullohPitts> & neurons = this->hiddenLayers[i].getNeurons();
+			for (int k = 0; k < inputs.size(); ++k)
+			{
+				double newWeight = inputs[k].getWeight()
+					+ 0.1
+					* neurons[i].getAdalineSignalError()
+					* inputs[k].getEntryValue();
+				neurons[j].getEntries()[k].setWeight(newWeight);
+			}
+		}
+	}
+
+	for (int i = 0; i < this->outputLayer.getSize(); ++i)
+	{
+		std::vector<Input> & inputs = this->outputLayer.getNeurons()[i].getEntries();
+		std::vector<McCullohPitts> & neurons = this->outputLayer.getNeurons();
+		for (int j = 0; j < inputs.size(); ++j)
+		{
+			double newWeight = inputs[j].getWeight()
+				+ 0.1
+				* neurons[i].getAdalineSignalError()
+				* inputs[j].getEntryValue();
+			neurons[i].getEntries()[j].setWeight(newWeight);
 		}
 	}
 }

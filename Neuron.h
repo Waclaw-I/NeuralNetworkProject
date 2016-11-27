@@ -16,7 +16,10 @@ public:
 	double getTargetValue() const;
 	void setTargetValue(double targetValue);
 	void calculateSignalError();
+	void calculateAdalineSignalError();
 	void setSignalError(double error);
+	void setAdalineSignalError(double error);
+	double getAdalineSignalError();
 	double getSignalError();
 	virtual void calculateOutput() = 0;
 	virtual void updateWeights() = 0;
@@ -25,6 +28,7 @@ protected:
 	double outputValue;
 	double targetValue;
 	double signalError;
+	double adalineSignalError;
 	double entriesSumValue;
 	double calculateSum();
 	virtual double derivativeFunc();

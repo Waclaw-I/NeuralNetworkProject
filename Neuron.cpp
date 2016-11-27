@@ -23,8 +23,11 @@ double Neuron::getTargetValue() const { return this->targetValue; }
 int Neuron::getEntriesAmount() const { return this->entries.size(); }
 void Neuron::setTargetValue(double targetValue) { this->targetValue = targetValue; }
 void Neuron::calculateSignalError() { this->signalError = this->targetValue - this->outputValue; }
+void Neuron::calculateAdalineSignalError() { this->adalineSignalError = this->targetValue - this->calculateSum(); }
 double Neuron::getSignalError() { return this->signalError; }
+double Neuron::getAdalineSignalError() { return this->adalineSignalError; }
 void Neuron::setSignalError(double error) { this->signalError = error; }
+void Neuron::setAdalineSignalError(double error) { this->adalineSignalError = error; }
 double Neuron::calculateSum() 
 {
 	this->entriesSumValue = 0;
