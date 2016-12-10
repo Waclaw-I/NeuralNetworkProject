@@ -1,20 +1,28 @@
-﻿Build started 27.11.2016 20:08:26.
+﻿Build started 10.12.2016 19:45:02.
      1>Project "C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\PSI_Project\PSI_Project.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
-     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(32): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(72): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(87): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
-         c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(108): note: see reference to function template instantiation 'auto main::<lambda_fbe47becca4c446ace0c1f40021eb546>::operator ()<std::vector<McCullohPitts,std::allocator<_Ty>>>(std::vector<_Ty,std::allocator<_Ty>> &) const' being compiled
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(38): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(100): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(188): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(204): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+         c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(225): note: see reference to function template instantiation 'auto ValidateNetwork::<lambda_7fc57f8e50f9a8113f773ad07caf6ac5>::operator ()<std::vector<McCullohPitts,std::allocator<_Ty>>>(std::vector<_Ty,std::allocator<_Ty>> &) const' being compiled
                  with
                  [
                      _Ty=McCullohPitts
                  ]
-     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(108): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(109): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(53): warning C4101: 'uniqueMAPEerror': unreferenced local variable
-     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(146): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(225): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(226): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(253): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(267): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+         c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(288): note: see reference to function template instantiation 'auto DuringLearningResults::<lambda_4c6f8c8d4fa649333b62d7f596693e7a>::operator ()<std::vector<McCullohPitts,std::allocator<_Ty>>>(std::vector<_Ty,std::allocator<_Ty>> &) const' being compiled
+                 with
+                 [
+                     _Ty=McCullohPitts
+                 ]
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(288): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+     1>c:\users\wacne_000\desktop\studia\psi\psi_project\psi_project\main.cpp(289): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\Debug\PSI_Project.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\Debug\PSI_Project.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\wacne_000\Desktop\Studia\PSI\PSI_Project\Debug\PSI_Project.lib" /MACHINE:X86 Debug\DataSetManager.obj
          Debug\Input.obj
@@ -30,4 +38,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.86
+Time Elapsed 00:00:00.88

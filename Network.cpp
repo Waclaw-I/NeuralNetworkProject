@@ -1,6 +1,7 @@
 #include "Network.h"
 #include "Input.h"
 #include <iostream>
+#include <algorithm>
 
 std::vector<Layer> & Network::getHiddenLayers() { return this->hiddenLayers; }
 Layer & Network::getInputLayer() { return this->inputLayer; }
@@ -211,6 +212,78 @@ void Network::updateWeights()
 	}
 }
 
+void Network::updateWeightsWTA()
+{
+	double biggestOutput;
+	int hLayerIndex;
+	int hLayerNeuronIndex;
+	int oLayerNeuronIndex;
+	bool isBiggestInOutputLayer = false;
+
+	for (int i = 0; i < this->hiddenLayers.size(); ++i)
+	{
+		int layerSize = this->hiddenLayers[i].getSize();
+		std::vector<McCullohPitts> & neurons = this->hiddenLayers[i].getNeurons();
+		for (int j = 0; j < layerSize; ++j)
+		{
+			if (j == 0)
+			{
+				biggestOutput = neurons[j].getOutputValue();
+				hLayerIndex = i;
+				hLayerNeuronIndex = j;
+			}
+			else
+			{
+				if (biggestOutput < neurons[j].getOutputValue())
+				{
+					biggestOutput = neurons[j].getOutputValue();
+					hLayerIndex = i;
+					hLayerNeuronIndex = j;
+				}
+			}
+		}
+	}
+
+	std::vector<McCullohPitts> & neurons = this->outputLayer.getNeurons();
+	for (int i = 0; i < this->outputLayer.getSize(); ++i)
+	{
+		if (biggestOutput < neurons[i].getOutputValue())
+		{
+			biggestOutput = neurons[i].getOutputValue();
+			oLayerNeuronIndex = i;
+			isBiggestInOutputLayer = true;
+		}
+		
+			
+		
+	}
+	//std::cout << "BiggestOutput: " << biggestOutput << std::endl;
+	if (isBiggestInOutputLayer)
+	{
+		std::vector<Input> & inputs = this->outputLayer.getNeurons()[oLayerNeuronIndex].getEntries();
+		for (int i = 0; i < inputs.size(); ++i)
+		{
+			double newWeight = inputs[i].getWeight()
+				+ 0.2 // learning factor TODO: need to be in a global variable or something like that
+				* (inputs[i].getEntryValue() - inputs[i].getWeight());
+
+			inputs[i].setWeight(newWeight);
+		}
+	}
+	else
+	{
+		std::vector<Input> & inputs = this->hiddenLayers[hLayerIndex].getNeurons()[hLayerNeuronIndex].getEntries();
+		for (int i = 0; i < inputs.size(); ++i)
+		{
+			double newWeight = inputs[i].getWeight()
+				+ 0.2 // learning factor TODO: need to be in a global variable or something like that
+				* (inputs[i].getEntryValue() - inputs[i].getWeight());
+
+			inputs[i].setWeight(newWeight);
+		}
+	}
+}
+
 void Network::updateWeightsHebbsRuleNoTeacher()
 {
 	for (int i = 0; i < this->hiddenLayers.size(); ++i)
@@ -223,7 +296,7 @@ void Network::updateWeightsHebbsRuleNoTeacher()
 			for (int k = 0; k < inputs.size(); ++k)
 			{
 				double newWeight = inputs[k].getWeight()
-					+ 0.1
+					+ 0.01
 					* neurons[j].getOutputValue()
 					* inputs[k].getEntryValue();
 				neurons[j].getEntries()[k].setWeight(newWeight);
@@ -260,7 +333,7 @@ void Network::updateWeightsHebbsRuleWithTeacher()
 			for (int k = 0; k < inputs.size(); ++k)
 			{
 				double newWeight = inputs[k].getWeight()
-					+ 0.1
+					+ 0.01
 					* neurons[i].getAdalineSignalError()
 					* inputs[k].getEntryValue();
 				neurons[j].getEntries()[k].setWeight(newWeight);

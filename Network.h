@@ -16,6 +16,7 @@ public:
 	void setTargetValues(int record, bool isLearning);
 	void feedForward();
 	void updateWeights();
+	void updateWeightsWTA();
 	void updateWeightsHebbsRuleNoTeacher();
 	void updateWeightsHebbsRuleWithTeacher();
 

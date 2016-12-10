@@ -19,10 +19,15 @@ using namespace std;
 void loadTrainingData(string path, vector<vector<double>> & trainingData);
 void saveMSEtoFile(string MSE);
 void SingleNeuronNet(Neuron * neuron);
-double epochAmount = 100;
+double epochAmount = 20;
 
 chrono::duration<double> totalTime;
 chrono::duration<double> epochTime;
+
+void ValidateNetwork(Network & network);
+void StandardLearning(Network & network);
+void HebbLearning(Network & network);
+void WTALearning(Network & network);
 
 int main()
 {
@@ -32,6 +37,7 @@ int main()
 	int outputsAmount = network.dataSetManager.outputsAmount;
 	double records = network.dataSetManager.learningRecords;
 	auto & outputNeurons = network.getOutputLayer().getNeurons();
+
 	for (int epoch = 1; epoch <= epochAmount; ++epoch)
 	{
 		start = chrono::system_clock::now();
@@ -46,11 +52,12 @@ int main()
 			network.setInputValues(i, true);
 			network.setTargetValues(i, true);
 
-			network.feedForward();
-			network.updateWeightsHebbsRuleWithTeacher();
+			StandardLearning(network);
+			//HebbLearning(network);
+			//WTALearning(network);
 
 			double uniqueMSEerror;
-			double uniqueMAPEerror;
+			//double uniqueMAPEerror;
 			for (int j = 0; j < outputsAmount; ++j)
 			{
 				double difference = outputNeurons[j].getTargetValue() - outputNeurons[j].getOutputValue();
@@ -69,67 +76,11 @@ int main()
 		cout << "Epoch " << epoch << " Time: " << epochTime.count() << endl;
 		saveMSEtoFile(to_string(MSE));
 	}
-	int validationRecords = network.dataSetManager.validationRecords;
-	system("cls");
-	cout << "\n\nOverall learning time: " << totalTime.count() << "\n\n";
-	cout << "############## VALIDATION RECORDS ##############" << "\n\n";
 
-	double overallCorrectAnswers = 0;
-	double overallFalseAnswers = 0;
+	ValidateNetwork(network);
 
-	vector<double> uniqueDigitCorrectAnswers(10);
-	vector<double> uniqueDigitFalseAnswers(10);
 
-	auto networkAnswer = [](auto & outputNeurons)
-	{
-		double answer = 0;
-		for (int i = 0; i < 10; ++i)
-			outputNeurons[answer].getOutputValue() > outputNeurons[i].getOutputValue() ? answer = answer : answer = i;
-		return answer;
-	};
-
-	auto targetAnswer = [](auto & targetOutputs)
-	{
-		double answer = 0;
-		for (int i = 0; i < 10; ++i)
-			if (targetOutputs[i] == 1) answer = i;
-		return answer;
-	};
-
-	for (int i = 0; i < validationRecords; i++)
-	{
-		auto & targetOutputs = network.dataSetManager.validationOutputDataSet[i];
-
-		network.setInputValues(i, false);
-		network.setTargetValues(i, false); // validation, not learning
-
-		network.feedForward();
-
-		int answerDigit = networkAnswer(outputNeurons);
-		int targetDigit = targetAnswer(targetOutputs);
-		if (answerDigit == targetDigit)
-		{
-			uniqueDigitCorrectAnswers[answerDigit]++;
-			overallCorrectAnswers++;
-		}
-		else
-		{
-			uniqueDigitFalseAnswers[targetDigit]++;
-			overallFalseAnswers++;
-		}
-	}
-
-	cout << "Correct: " << overallCorrectAnswers << endl;
-	cout << "False: " << overallFalseAnswers << endl;
-	cout << "Network effectiveness: " << static_cast<double>(overallCorrectAnswers / (overallCorrectAnswers + overallFalseAnswers)) * 100 << "%\n\n";
-
-	cout << "DIGIT : CORRECT | FALSE\n\n";
-	for (int i = 0; i < 10; ++i)
-	{
-		cout << i << " : \t" << uniqueDigitCorrectAnswers[i] << "  \t" << uniqueDigitFalseAnswers[i] << endl;
-	}
-
-	cin.get();
+	
 }
 
 void SingleNeuronNet(Neuron * neuron)
@@ -226,4 +177,88 @@ void saveMSEtoFile(string MSE)
 	fstream MSEFile;
 	MSEFile.open("MSE.txt", ios::out | ios_base::app);
 	MSEFile << MSE << endl;
+}
+
+
+void ValidateNetwork(Network & network)
+{
+	int validationRecords = network.dataSetManager.validationRecords;
+	auto & outputNeurons = network.getOutputLayer().getNeurons();
+	system("cls");
+	cout << "\n\nOverall learning time: " << totalTime.count() << "\n\n";
+	cout << "############## VALIDATION RECORDS ##############" << "\n\n";
+
+	double overallCorrectAnswers = 0;
+	double overallFalseAnswers = 0;
+
+	vector<double> uniqueDigitCorrectAnswers(10);
+	vector<double> uniqueDigitFalseAnswers(10);
+
+	auto networkAnswer = [](auto & outputNeurons)
+	{
+		double answer = 0;
+		for (int i = 0; i < 10; ++i)
+			outputNeurons[answer].getOutputValue() > outputNeurons[i].getOutputValue() ? answer = answer : answer = i;
+		return answer;
+	};
+
+	auto targetAnswer = [](auto & targetOutputs)
+	{
+		double answer = 0;
+		for (int i = 0; i < 10; ++i)
+			if (targetOutputs[i] == 1) answer = i;
+		return answer;
+	};
+
+	for (int i = 0; i < validationRecords; i++)
+	{
+		auto & targetOutputs = network.dataSetManager.validationOutputDataSet[i];
+
+		network.setInputValues(i, false);
+		network.setTargetValues(i, false); // validation, not learning
+
+		network.feedForward();
+
+		int answerDigit = networkAnswer(outputNeurons);
+		int targetDigit = targetAnswer(targetOutputs);
+		if (answerDigit == targetDigit)
+		{
+			uniqueDigitCorrectAnswers[answerDigit]++;
+			overallCorrectAnswers++;
+		}
+		else
+		{
+			uniqueDigitFalseAnswers[targetDigit]++;
+			overallFalseAnswers++;
+		}
+	}
+
+	cout << "Correct: " << overallCorrectAnswers << endl;
+	cout << "False: " << overallFalseAnswers << endl;
+	cout << "Network effectiveness: " << static_cast<double>(overallCorrectAnswers / (overallCorrectAnswers + overallFalseAnswers)) * 100 << "%\n\n";
+
+	cout << "DIGIT : CORRECT | FALSE\n\n";
+	for (int i = 0; i < 10; ++i)
+	{
+		cout << i << " : \t" << uniqueDigitCorrectAnswers[i] << "  \t" << uniqueDigitFalseAnswers[i] << endl;
+	}
+
+	cin.get();
+}
+void StandardLearning(Network & network)
+{
+	network.feedForward();
+	network.updateWeights();
+}
+
+void HebbLearning(Network & network)
+{
+	network.feedForward();
+	network.updateWeightsHebbsRuleWithTeacher();
+}
+
+void WTALearning(Network & network)
+{
+	network.feedForward();
+	network.updateWeightsWTA();
 }
