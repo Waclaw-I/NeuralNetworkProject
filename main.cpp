@@ -19,7 +19,7 @@ using namespace std;
 void loadTrainingData(string path, vector<vector<double>> & trainingData);
 void saveMSEtoFile(string MSE);
 void SingleNeuronNet(Neuron * neuron);
-double epochAmount = 20;
+double epochAmount = 200;
 
 chrono::duration<double> totalTime;
 chrono::duration<double> epochTime;
@@ -33,7 +33,7 @@ int main()
 {
 	chrono::time_point<chrono::system_clock> start, end;
 
-	Network network(256, 1, 15, 10); // inputs, hidden layers, neuron in each hidden layer, outputs
+	Network network(256, 3, 15, 10); // inputs, hidden layers, neuron in each hidden layer, outputs
 	int outputsAmount = network.dataSetManager.outputsAmount;
 	double records = network.dataSetManager.learningRecords;
 	auto & outputNeurons = network.getOutputLayer().getNeurons();
@@ -52,9 +52,9 @@ int main()
 			network.setInputValues(i, true);
 			network.setTargetValues(i, true);
 
-			StandardLearning(network);
+			//StandardLearning(network);
 			//HebbLearning(network);
-			//WTALearning(network);
+			WTALearning(network);
 
 			double uniqueMSEerror;
 			//double uniqueMAPEerror;
