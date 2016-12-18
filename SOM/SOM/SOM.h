@@ -11,6 +11,7 @@ public:
 	bool EpochWTM(const dataSet & data, sf::RenderWindow & window);
 	bool EpochWTA(const dataSet & data, sf::RenderWindow & window);
 	int findBestMatchingUnit(std::vector<double>);
+	void showDesiredNode(std::vector<double> color);
 
 	void printNodes();
 

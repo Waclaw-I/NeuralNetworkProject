@@ -61,7 +61,8 @@ bool SOM::EpochWTM(const dataSet & data, sf::RenderWindow & window)
 			}
 		}
 
-		learningRate = startLearningRate * exp(-static_cast<double>(i / iterations));
+		learningRate = startLearningRate * exp(-static_cast<double>(i / (double)iterations));
+		//std::cout << learningRate << std::endl;
 
 		updateNodesGraphs();
 		for (auto & node : getNodesGraphs())
@@ -163,6 +164,12 @@ void SOM::updateNodesGraphs()
 			255)); // transparency
 
 	}
+}
+
+void SOM::showDesiredNode(std::vector<double> color)
+{
+	int desiredNode = findBestMatchingUnit(color);
+	nodesGraphs[desiredNode].setFillColor(sf::Color::Black);
 }
 std::vector<sf::RectangleShape> & SOM::getNodesGraphs()
 {
